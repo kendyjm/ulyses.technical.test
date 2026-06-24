@@ -29,4 +29,20 @@ public interface SalesRepository {
      */
     Optional<Sales> findById(Long id);
 
+    /**
+     * Find all sales for a specific brand.
+     *
+     * @param brandId the ID of the brand
+     * @return a list of all sales records for that brand; empty list if the brand has no sales
+     */
+    List<Sales> findByBrandId(Long brandId);
+
+    /**
+     * Find all sales for a specific vehicle.
+     *
+     * @param vehicleId the ID of the vehicle
+     * @return a list of all sales records for that vehicle; empty list if the vehicle has no sales
+     */
+    List<Sales> findByVehicleId(Long vehicleId);
+
 }

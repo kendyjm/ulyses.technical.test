@@ -1,7 +1,9 @@
 package com.septeo.ulyses.technical.test.service;
 
 import com.septeo.ulyses.technical.test.entity.Sales;
+import com.septeo.ulyses.technical.test.repository.BrandRepository;
 import com.septeo.ulyses.technical.test.repository.SalesRepository;
+import com.septeo.ulyses.technical.test.repository.VehicleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +22,12 @@ public class SalesServiceImpl implements SalesService {
     @Autowired
     private SalesRepository salesRepository;
 
+    @Autowired
+    private BrandRepository brandRepository;
+
+    @Autowired
+    private VehicleRepository vehicleRepository;
+
     /**
      * {@inheritDoc}
      */
@@ -34,6 +42,28 @@ public class SalesServiceImpl implements SalesService {
     @Override
     public Optional<Sales> getSalesById(Long id) {
         return salesRepository.findById(id);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<List<Sales>> getSalesByBrandId(Long brandId) {
+        if (brandRepository.findById(brandId).isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(salesRepository.findByBrandId(brandId));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<List<Sales>> getSalesByVehicleId(Long vehicleId) {
+        if (vehicleRepository.findById(vehicleId).isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(salesRepository.findByVehicleId(vehicleId));
     }
 
 }

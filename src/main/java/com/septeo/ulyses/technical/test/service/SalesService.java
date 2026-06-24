@@ -1,10 +1,7 @@
 package com.septeo.ulyses.technical.test.service;
 
-import com.septeo.ulyses.technical.test.entity.Brand;
 import com.septeo.ulyses.technical.test.entity.Sales;
-import com.septeo.ulyses.technical.test.entity.Vehicle;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,5 +24,23 @@ public interface SalesService {
      * @return an Optional containing the sales if found, or empty if not found
      */
     Optional<Sales> getSalesById(Long id);
+
+    /**
+     * Get all sales for a specific brand.
+     *
+     * @param brandId the ID of the brand to look up
+     * @return an Optional containing the list of sales if the brand exists (may be empty list),
+     *         or Optional.empty() if the brand does not exist
+     */
+    Optional<List<Sales>> getSalesByBrandId(Long brandId);
+
+    /**
+     * Get all sales for a specific vehicle.
+     *
+     * @param vehicleId the ID of the vehicle to look up
+     * @return an Optional containing the list of sales if the vehicle exists (may be empty list),
+     *         or Optional.empty() if the vehicle does not exist
+     */
+    Optional<List<Sales>> getSalesByVehicleId(Long vehicleId);
 
 }

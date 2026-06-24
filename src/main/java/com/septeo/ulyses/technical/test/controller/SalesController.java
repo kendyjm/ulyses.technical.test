@@ -30,6 +30,18 @@ public class SalesController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // TODO: implement here your endpoints
+    @GetMapping("/brands/{brandId}")
+    public ResponseEntity<List<Sales>> getSalesByBrandId(@PathVariable Long brandId) {
+        return salesService.getSalesByBrandId(brandId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/vehicles/{vehicleId}")
+    public ResponseEntity<List<Sales>> getSalesByVehicleId(@PathVariable Long vehicleId) {
+        return salesService.getSalesByVehicleId(vehicleId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
 
 }
