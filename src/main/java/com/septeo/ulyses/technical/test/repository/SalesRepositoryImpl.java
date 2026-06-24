@@ -3,15 +3,18 @@ package com.septeo.ulyses.technical.test.repository;
 import com.septeo.ulyses.technical.test.entity.Brand;
 import com.septeo.ulyses.technical.test.entity.Sales;
 import com.septeo.ulyses.technical.test.entity.Vehicle;
+import com.septeo.ulyses.technical.test.model.VehicleSalesCountProjection;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * Implementation of the SalesRepository interface.
@@ -76,5 +79,33 @@ public class SalesRepositoryImpl implements SalesRepository {
         query.setFirstResult((int) firstResult);
         query.setMaxResults(PAGE_SIZE);
         return query.getResultList();
+    }
+
+    @Override
+    public Stream<VehicleSalesCountProjection> streamSalesCountByVehicle(LocalDate startDate, LocalDate endDate) {
+        boolean hasStart = startDate != null;
+        boolean hasEnd = endDate != null;
+
+        // Constructor expression projects straight into a typed record. Only s.vehicle.id
+        // (the FK column on sales) is read — Hibernate resolves it without joining the
+        // vehicles table, so no Vehicle entity is hydrated here.
+        StringBuilder jpql = new StringBuilder(
+                "SELECT new com.septeo.ulyses.technical.test.model.VehicleSalesCountProjection("
+                        + "s.vehicle.id, COUNT(s)) FROM Sales s");
+        if (hasStart && hasEnd) {
+            jpql.append(" WHERE s.saleDate >= :startDate AND s.saleDate <= :endDate");
+        } else if (hasStart) {
+            jpql.append(" WHERE s.saleDate >= :startDate");
+        } else if (hasEnd) {
+            jpql.append(" WHERE s.saleDate <= :endDate");
+        }
+        jpql.append(" GROUP BY s.vehicle.id");
+
+        TypedQuery<VehicleSalesCountProjection> query =
+                entityManager.createQuery(jpql.toString(), VehicleSalesCountProjection.class);
+        if (hasStart) query.setParameter("startDate", startDate);
+        if (hasEnd) query.setParameter("endDate", endDate);
+
+        return query.getResultStream();
     }
 }

@@ -1,7 +1,9 @@
 package com.septeo.ulyses.technical.test.service;
 
 import com.septeo.ulyses.technical.test.entity.Sales;
+import com.septeo.ulyses.technical.test.model.VehicleSalesCount;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,5 +52,15 @@ public interface SalesService {
      * @return up to 10 sales records for the given page; empty list if the page is out of range
      */
     List<Sales> getSalesPaginated(int page);
+
+    /**
+     * Get the top 5 best-selling vehicles with optional date-range filtering.
+     * Ties in salesCount are broken by ascending vehicle id for deterministic ordering.
+     *
+     * @param startDate inclusive lower bound on sale date, or null for no lower bound
+     * @param endDate   inclusive upper bound on sale date, or null for no upper bound
+     * @return up to 5 VehicleSalesCount objects ranked highest-to-lowest by salesCount
+     */
+    List<VehicleSalesCount> getBestSellingVehicles(LocalDate startDate, LocalDate endDate);
 
 }
