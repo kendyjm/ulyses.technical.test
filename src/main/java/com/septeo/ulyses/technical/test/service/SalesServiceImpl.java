@@ -66,4 +66,12 @@ public class SalesServiceImpl implements SalesService {
         return Optional.of(salesRepository.findByVehicleId(vehicleId));
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Sales> getSalesPaginated(int page) {
+        return salesRepository.findAllPaginated(page);
+    }
+
 }

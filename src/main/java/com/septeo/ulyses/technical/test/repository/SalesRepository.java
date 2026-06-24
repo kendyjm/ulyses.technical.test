@@ -45,4 +45,12 @@ public interface SalesRepository {
      */
     List<Sales> findByVehicleId(Long vehicleId);
 
+    /**
+     * Find a paginated page of sales, ordered by ID ascending.
+     *
+     * @param page zero-based page index
+     * @return up to 10 sales records for the given page; empty list if the page is out of range
+     */
+    List<Sales> findAllPaginated(int page);
+
 }

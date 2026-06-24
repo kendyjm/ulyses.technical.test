@@ -20,6 +20,9 @@ import java.util.Optional;
 @Repository
 public class SalesRepositoryImpl implements SalesRepository {
 
+    /** Fixed number of records per page (see project pagination contract). */
+    private static final int PAGE_SIZE = 10;
+
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -56,6 +59,22 @@ public class SalesRepositoryImpl implements SalesRepository {
         String stringQuery = "SELECT s FROM Sales s WHERE s.vehicle.id = :vehicleId";
         Query query = entityManager.createQuery(stringQuery);
         query.setParameter("vehicleId", vehicleId);
+        return query.getResultList();
+    }
+
+    @Override
+    public List<Sales> findAllPaginated(int page) {
+        // Compute the offset in long arithmetic so a very large page cannot overflow
+        // int and wrap to a negative value (which setFirstResult would reject). Any
+        // offset beyond the addressable range is, by definition, out of range -> empty.
+        long firstResult = (long) page * PAGE_SIZE;
+        if (firstResult > Integer.MAX_VALUE) {
+            return List.of();
+        }
+        String stringQuery = "SELECT s FROM Sales s ORDER BY s.id ASC";
+        Query query = entityManager.createQuery(stringQuery);
+        query.setFirstResult((int) firstResult);
+        query.setMaxResults(PAGE_SIZE);
         return query.getResultList();
     }
 }

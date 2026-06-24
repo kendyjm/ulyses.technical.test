@@ -43,4 +43,12 @@ public interface SalesService {
      */
     Optional<List<Sales>> getSalesByVehicleId(Long vehicleId);
 
+    /**
+     * Get a paginated page of all sales.
+     *
+     * @param page zero-based page index; negative values must be rejected by the caller
+     * @return up to 10 sales records for the given page; empty list if the page is out of range
+     */
+    List<Sales> getSalesPaginated(int page);
+
 }
